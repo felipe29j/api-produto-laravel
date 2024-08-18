@@ -138,6 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Erro ao salvar produto:', error);
+            alert(`Erro ao salvar produto: Produto com esse nome já existente!`);
+
         });
     });
 
