@@ -110,7 +110,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 return response.json().then(data => {
                     console.log('Produto salvo com sucesso:', data);
-                    loadProdutos(); // Atualiza a lista de produtos
+
+                    // Limpa o formulário
+                    clearForm();
+
+                    // Alterna para a seção de listagem
+                    document.getElementById('formSection').style.display = 'none';
+                    document.getElementById('listSection').style.display = 'block';
+
+                    // Recarrega a lista de produtos
+                    loadProdutos();
 
                     // Aguarda um momento para garantir que o DOM foi atualizado
                     setTimeout(() => {
@@ -119,11 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             produtoElement.scrollIntoView({ behavior: 'smooth' });
                         }
                     }, 500);
-
-                    clearForm(); // Limpa o formulário
                 });
             } else {
-                // Aqui, tratamos erros com base no tipo de resposta
                 return response.text().then(text => {
                     console.error('Resposta inesperada do servidor:', text);
                     alert(`Erro ao salvar produto: Produto com esse nome já existente!`);
@@ -145,20 +151,29 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('cidade_id').value = '';
     }
 
+    // Função para exibir o formulário e preencher com os dados do produto
+    function showFormWithData(produto) {
+        document.getElementById('produtoId').value = produto.id;
+        document.getElementById('nome_produto').value = produto.nome_produto;
+        document.getElementById('valor_produto').value = produto.valor_produto;
+        document.getElementById('marca_produto').value = produto.cod_marca;
+        document.getElementById('estoque').value = produto.estoque;
+        document.getElementById('cidade_id').value = produto.cod_cidade;
+
+        // Alterna para a seção do formulário
+        document.getElementById('formSection').style.display = 'block';
+        document.getElementById('listSection').style.display = 'none';
+
+        // Rola para o topo da página suavemente
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     // Função para editar um produto
     window.editProduto = function(id) {
         fetch(`/api/produtos/${id}`)
             .then(response => response.json())
             .then(produto => {
-                document.getElementById('produtoId').value = produto.id;
-                document.getElementById('nome_produto').value = produto.nome_produto;
-                document.getElementById('valor_produto').value = produto.valor_produto;
-                document.getElementById('marca_produto').value = produto.cod_marca;
-                document.getElementById('estoque').value = produto.estoque;
-                document.getElementById('cidade_id').value = produto.cod_cidade;
-
-                // Rola para o topo da página suavemente
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showFormWithData(produto);
             })
             .catch(error => console.error('Erro ao carregar produto:', error));
     };
@@ -183,6 +198,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Erro ao excluir produto:', error));
     };
 
+    function clearFilters() {
+        document.getElementById('valor_min').value = '';
+        document.getElementById('valor_max').value = '';
+        document.getElementById('cidade_filter').value = '';
+    }
+
     // Função para aplicar filtros e carregar produtos
     document.getElementById('applyFilters')?.addEventListener('click', function() {
         const valorMin = document.getElementById('valor_min').value;
@@ -193,12 +214,29 @@ document.addEventListener('DOMContentLoaded', function() {
         if (valorMin) filters['valor_min'] = valorMin;
         if (valorMax) filters['valor_max'] = valorMax;
         if (cidadeId) filters['cidade_id'] = cidadeId;
-        clearForm(); // Limpa o formulário
+
         loadProdutos(filters);
     });
 
-    // Carregar dados iniciais
-    loadProdutos();
-    loadCidades();
-    loadMarcas();
+    // Inicializar
+    function initialize() {
+        loadProdutos();  // Carregar produtos sem filtros iniciais
+        loadCidades();   // Carregar cidades para filtros e formulário
+        loadMarcas();    // Carregar marcas para o formulário
+    }
+
+    // Alternar entre seções de formulário e listagem
+    document.getElementById('menuForm').addEventListener('click', function() {
+        document.getElementById('formSection').style.display = 'block';
+        document.getElementById('listSection').style.display = 'none';
+        clearFilters();
+
+    });
+
+    document.getElementById('menuList').addEventListener('click', function() {
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('listSection').style.display = 'block';
+    });
+
+    initialize();
 });

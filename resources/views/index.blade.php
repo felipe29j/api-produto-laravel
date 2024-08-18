@@ -1,4 +1,3 @@
-<!-- resources/views/produtos/index.blade.php -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,14 +12,20 @@
 <body>
     <header>
         <h1>Gerenciamento de Produtos</h1>
+        <br>
+    <nav class="main-nav">
+        <a href="#" id="menuForm" class="nav-link">Cadastrar</a>
+        <a href="#" id="menuList" class="nav-link">Listar Produtos</a>
+    </nav>
     </header>
 
-    @include('produtos.form') <!-- Inclui o formulário -->
+    <main>
+        <section id="formSection">
+            @include('produtos.form')
+        </section>
 
-    <div class="h2produto">
-        <h2>Produtos</h2>
-    </div>
-    @include('produtos.list') <!-- Inclui a listagem e filtros -->
+        <section id="listSection" style="display: none;">
+            @include('produtos.list')
+        </section>
+    </main>
 
-</body>
-</html>
