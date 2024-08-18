@@ -1,3 +1,4 @@
+<!-- resources/views/produtos/index.blade.php -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,21 +14,13 @@
     <header>
         <h1>Gerenciamento de Produtos</h1>
     </header>
-    
-    <form id="produtoForm">
-        <input type="hidden" id="produtoId">
-        Nome: <input type="text" id="nome_produto" required><br>
-        Valor: <input type="number" id="valor_produto" step="0.01" required><br>
-        Marca: <select id="marca_produto" required></select><br>
-        Estoque: <input type="number" id="estoque" step="0.01" required><br>
-        Cidade: <select id="cidade_id" required></select><br>
-        <button type="submit">Salvar</button>
-    </form>
+
+    @include('produtos.form') <!-- Inclui o formulário -->
 
     <div class="h2produto">
         <h2>Produtos</h2>
     </div>
-    
-    <div id="produtos"></div>
+    @include('produtos.list') <!-- Inclui a listagem e filtros -->
+
 </body>
 </html>

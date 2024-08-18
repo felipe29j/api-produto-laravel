@@ -34,8 +34,10 @@ Este é um projeto de gerenciamento de produtos com uma API RESTful desenvolvida
 
   # Passo 1: Clone o Repositório
     
-    git clone https://github.com/usuario/repositorio.git
+    git clone https://github.com/felipe29j/api-produto-laravel.git
 
+    ou git clone git@github.com:felipe29j/api-produto-laravel.git
+    
     cd repositorio
 
   # Passo 2: Instale as Dependências do Composer

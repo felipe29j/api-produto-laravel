@@ -125,3 +125,57 @@ button:hover {
     text-align: center;
     margin: 0;
 }
+
+
+/* Estilos adicionais para filtros e estatísticas */
+.filters {
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.filter-group {
+    margin-bottom: 10px;
+}
+
+.statistics {
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.delete-btn {
+    background-color: #f44336; /* Vermelho */
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f;
+}
+.navbar {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: inline-block;
+    border-radius: 4px;
+}
+.navbar a.active {
+    background-color: #45A049; /* Verde mais escuro */
+}
+.content {
+    padding: 20px;
+}
+.hidden {
+    display: none;
+}

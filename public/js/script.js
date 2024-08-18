@@ -1,19 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtém o token CSRF do meta tag
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // Função para carregar produtos
-    function loadProdutos() {
-        fetch('/api/produtos')
+    // Função para carregar produtos com filtros opcionais
+    function loadProdutos(filters = {}) {
+        const queryString = new URLSearchParams(filters).toString();
+        fetch(`/api/produtos?${queryString}`)
             .then(response => response.json())
             .then(data => {
                 const produtosContainer = document.getElementById('produtos');
                 produtosContainer.innerHTML = ''; // Limpa o container
+
+                let somaValores = 0;
+                let totalProdutos = data.length;
+
                 data.forEach(produto => {
                     const marcaNome = produto.marca ? produto.marca.nome : 'N/A';
                     const cidadeNome = produto.cidade ? produto.cidade.nome : 'N/A';
+                    somaValores += parseFloat(produto.valor_produto);
+
                     produtosContainer.innerHTML += `
-                        <div class="produto-item">
+                        <div class="produto-item" id="produto-${produto.id}" data-id="${produto.id}" data-estoque="${produto.estoque}">
                             <h3>${produto.nome_produto}</h3>
                             <div class="produto-info">
                                 <p><span>Valor:</span> R$ ${produto.valor_produto}</p>
@@ -22,43 +28,62 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p><span>Estoque:</span> ${produto.estoque}</p>
                             </div>
                             <button onclick="editProduto(${produto.id})">Editar</button>
-                            <button onclick="deleteProduto(${produto.id})">Excluir</button>
+                            <button onclick="deleteProduto(${produto.id})" class="delete-btn">Excluir</button>
                         </div>
                     `;
                 });
+
+                updateStatistics(somaValores, totalProdutos);
             })
             .catch(error => console.error('Erro ao carregar produtos:', error));
     }
 
-    // Função para carregar marcas
-    function loadMarcas() {
-        fetch('/api/marcas')
-            .then(response => response.json())
-            .then(data => {
-                const marcaSelect = document.getElementById('marca_produto');
-                marcaSelect.innerHTML = ''; // Limpa o select
-                data.forEach(marca => {
-                    marcaSelect.innerHTML += `<option value="${marca.id}">${marca.nome}</option>`;
-                });
-            })
-            .catch(error => console.error('Erro ao carregar marcas:', error));
+    // Função para atualizar estatísticas de soma e média
+    function updateStatistics(somaValores, totalProdutos) {
+        const mediaValores = (totalProdutos > 0) ? (somaValores / totalProdutos).toFixed(2) : 0;
+        document.getElementById('media_valores').innerText = `${mediaValores}`;
+        document.getElementById('soma_valores').innerText = `${somaValores.toFixed(2)}`;
     }
 
-    // Função para carregar cidades
+    // Função para carregar cidades no filtro e no formulário de produto
     function loadCidades() {
         fetch('/api/cidades')
             .then(response => response.json())
             .then(data => {
-                const cidadeSelect = document.getElementById('cidade_id');
-                cidadeSelect.innerHTML = ''; // Limpa o select
+                const cidadeSelectFilter = document.getElementById('cidade_filter');
+                const cidadeSelectForm = document.getElementById('cidade_id');
+                
+                // Limpa os selects
+                cidadeSelectFilter.innerHTML = '<option value="">Selecione uma cidade</option>';
+                cidadeSelectForm.innerHTML = '<option value="">Selecione uma cidade</option>';
+                
                 data.forEach(cidade => {
-                    cidadeSelect.innerHTML += `<option value="${cidade.id}">${cidade.nome}</option>`;
+                    const option = `<option value="${cidade.id}">${cidade.nome}</option>`;
+                    cidadeSelectFilter.innerHTML += option;
+                    cidadeSelectForm.innerHTML += option;
                 });
             })
             .catch(error => console.error('Erro ao carregar cidades:', error));
     }
 
-    // Função para salvar ou atualizar produto
+    // Função para carregar marcas no formulário de produto
+    function loadMarcas() {
+        fetch('/api/marcas')
+            .then(response => response.json())
+            .then(data => {
+                const marcaSelectForm = document.getElementById('marca_produto');
+                
+                // Limpa o select
+                marcaSelectForm.innerHTML = '<option value="">Selecione uma marca</option>';
+                
+                data.forEach(marca => {
+                    marcaSelectForm.innerHTML += `<option value="${marca.id}">${marca.nome}</option>`;
+                });
+            })
+            .catch(error => console.error('Erro ao carregar marcas:', error));
+    }
+
+    // Função para salvar ou atualizar um produto
     document.getElementById('produtoForm').addEventListener('submit', function(event) {
         event.preventDefault();
         const id = document.getElementById('produtoId').value;
@@ -83,23 +108,42 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (response.ok) {
-                return response.json();
+                return response.json().then(data => {
+                    console.log('Produto salvo com sucesso:', data);
+                    loadProdutos(); // Atualiza a lista de produtos
+
+                    // Aguarda um momento para garantir que o DOM foi atualizado
+                    setTimeout(() => {
+                        const produtoElement = document.getElementById(`produto-${data.id}`);
+                        if (produtoElement) {
+                            produtoElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 500);
+
+                    clearForm(); // Limpa o formulário
+                });
             } else {
+                // Aqui, tratamos erros com base no tipo de resposta
                 return response.text().then(text => {
                     console.error('Resposta inesperada do servidor:', text);
-                    throw new Error(`Erro ${response.status}: ${text}`);
+                    alert(`Erro ao salvar produto: Produto com esse nome já existente!`);
                 });
             }
-        })
-        .then(data => {
-            console.log('Produto salvo com sucesso:', data);
-            loadProdutos();
-            clearForm();
         })
         .catch(error => {
             console.error('Erro ao salvar produto:', error);
         });
     });
+
+    // Função para limpar o formulário
+    function clearForm() {
+        document.getElementById('produtoId').value = '';
+        document.getElementById('nome_produto').value = '';
+        document.getElementById('valor_produto').value = '';
+        document.getElementById('marca_produto').value = '';
+        document.getElementById('estoque').value = '';
+        document.getElementById('cidade_id').value = '';
+    }
 
     // Função para editar um produto
     window.editProduto = function(id) {
@@ -112,12 +156,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('marca_produto').value = produto.cod_marca;
                 document.getElementById('estoque').value = produto.estoque;
                 document.getElementById('cidade_id').value = produto.cod_cidade;
+
+                // Rola para o topo da página suavemente
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             })
             .catch(error => console.error('Erro ao carregar produto:', error));
     };
 
     // Função para excluir um produto
     window.deleteProduto = function(id) {
+        const produtoItem = document.querySelector(`.produto-item[data-id="${id}"]`);
+        const estoque = produtoItem.getAttribute('data-estoque');
+        
+        if (parseInt(estoque) > 0) {
+            alert('Não é possível excluir um produto com estoque.');
+            return;
+        }
+
         fetch(`/api/produtos/${id}`, {
             method: 'DELETE',
             headers: {
@@ -128,18 +183,22 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Erro ao excluir produto:', error));
     };
 
-    // Função para limpar o formulário
-    function clearForm() {
-        document.getElementById('produtoId').value = '';
-        document.getElementById('nome_produto').value = '';
-        document.getElementById('valor_produto').value = '';
-        document.getElementById('marca_produto').value = '';
-        document.getElementById('estoque').value = '';
-        document.getElementById('cidade_id').value = '';
-    }
+    // Função para aplicar filtros e carregar produtos
+    document.getElementById('applyFilters')?.addEventListener('click', function() {
+        const valorMin = document.getElementById('valor_min').value;
+        const valorMax = document.getElementById('valor_max').value;
+        const cidadeId = document.getElementById('cidade_filter').value;
 
-    // Carregar dados ao iniciar a página
+        const filters = {};
+        if (valorMin) filters['valor_min'] = valorMin;
+        if (valorMax) filters['valor_max'] = valorMax;
+        if (cidadeId) filters['cidade_id'] = cidadeId;
+        clearForm(); // Limpa o formulário
+        loadProdutos(filters);
+    });
+
+    // Carregar dados iniciais
     loadProdutos();
-    loadMarcas();
     loadCidades();
+    loadMarcas();
 });
