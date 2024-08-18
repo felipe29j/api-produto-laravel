@@ -1,0 +1,127 @@
+/* Estilos básicos para a página */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #4CAF50; /* Verde mais escuro */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+h1, h2 {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+}
+
+form {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+input, select, button {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Remove as setas de número */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+button {
+    background-color: #4CAF50; /* Verde mais escuro */
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049; /* Verde mais claro */
+}
+
+#produtos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 1200px; /* Ajuste conforme necessário */
+}
+
+.produto-item {
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 300px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.produto-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.produto-item h3 {
+    margin-top: 0;
+    color: #4CAF50;
+}
+
+.produto-info {
+    margin-bottom: 10px;
+}
+
+.produto-info span {
+    font-weight: bold;
+}
+
+.produto-item button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.produto-item button:hover {
+    background-color: #45a049;
+}
+
+.h2produto {
+    background-color: #4CAF50; /* Verde mais escuro */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}

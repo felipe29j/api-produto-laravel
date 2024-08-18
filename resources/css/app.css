@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar {
+    background-color: #00aaff; 
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    display: flex;
+    align-items: center;
+    color: #ffffff; 
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #0077cc;
+    color: #ffffff;
+}
+
+.navbar a i {
+    margin-right: 8px;
+}
+
+.container {
+    padding: 20px;
+    margin: 20px;
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+    color: #00aaff; 
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #00aaff; 
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #00aaff; 
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0077cc; 
+}
+
+/* Estilo da tabela */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #00aaff; 
+    color: white;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+@media screen and (max-width: 600px) {
+    .navbar a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .form-group input, 
+    .form-group select {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+}
